@@ -17,14 +17,11 @@ export default function Incidents() {
   const [loading,setLoading] = useState(false);
   const [refreshing,setRefreshing] = useState(false);
   const navigation = useNavigation();
-  async function handleRefresh() {
+  async function handleRefresh() {   
     if (loading) {
       return;
     }
     if (refreshing) {
-      return;
-    }
-    if (total> 0 && incidents.length === total) {
       return;
     }
     setLoading(true);
@@ -34,31 +31,33 @@ export default function Incidents() {
       page: 1
     }
    });
+   
     setIncidents(response.data);
-    setTotal(response.headers['x-total-count']);
-    
+    setTotal(response.headers['x-total-count']); 
     setLoading(false);
     setRefreshing(false);
+    setPage(2);
   }
-  async function loadData() {
+  async function loadData() {   
     if (loading) {
       return;
     }
-    if (total> 0 && incidents.length === total) {
+    if (total > 0 && incidents.length == total) {
       return;
     }
     setLoading(true);
-  const response = await api.get(`incidents`, {
+    const response = await api.get(`incidents`, {
     params: {
       page
     }
-  });
+    });
     setIncidents([...incidents,...response.data]);
     setTotal(response.headers['x-total-count']);
     setPage(page+1);
     setLoading(false);
   }
   useEffect(() => {
+    setPage(1);
     loadData();
   }
   ,[]);
